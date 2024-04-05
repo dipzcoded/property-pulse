@@ -1,18 +1,14 @@
-import React from "react";
-// import properties from "@/properties.json";
 import PropertyCard from "@/components/PropertyCard";
+import { fetchProperties } from "@/fetchers/properties.fetcher";
+export default async function PropertiesPage() {
+  const properties = await fetchProperties();
 
-async function fetchProperties() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_DOMAIN}/properties`);
-  } catch (error) {}
-}
+  console.log(properties);
 
-export default function PropertiesPage() {
   return (
     <section className="px-4 py-6">
       <div className="container-xl lg:container m-auto px-4 py-6">
-        {/* {properties.length === 0 ? (
+        {properties.length === 0 ? (
           <p>no properties found</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -20,7 +16,7 @@ export default function PropertiesPage() {
               <PropertyCard key={property.id} property={property} />
             ))}
           </div>
-        )} */}
+        )}
       </div>
     </section>
   );

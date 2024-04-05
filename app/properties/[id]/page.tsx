@@ -1,7 +1,25 @@
-"use client";
-import { useParams } from "next/navigation";
+import PropertyHeaderImage from "@/components/PropertyHeaderImage";
+import { fetchPropertyById } from "@/fetchers/properties.fetcher";
 
-export default function PropertyPage() {
-  const { id } = useParams<{ id: string }>();
-  return <div>property details page {id}</div>;
+type Props = {
+  params: {
+    id: string;
+  };
+};
+
+export default async function PropertyPage({ params }: Props) {
+  // const { id } = useParams<{ id: string }>();
+  const property = await fetchPropertyById(params.id);
+
+  if (!property)
+    return (
+      <h1 className="text-center text-2xl font-bold mt-10">
+        Property not found
+      </h1>
+    );
+  return (
+    <>
+      <PropertyHeaderImage image={property.images[0]} />
+    </>
+  );
 }

@@ -54,7 +54,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           </p>
           <p>
             <FaRulerCombined className="inline mr-2" />
-            {property.sqaureFeet.toLocaleString()}{" "}
+            {property.squareFeet.toLocaleString()}{" "}
             <span className="md:hidden lg:inline">sqft</span>
           </p>
         </div>

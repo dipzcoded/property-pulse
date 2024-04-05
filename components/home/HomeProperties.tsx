@@ -1,8 +1,10 @@
 import Link from "next/link";
-import properties from "@/properties.json";
 import PropertyCard from "../PropertyCard";
+import { fetchProperties } from "@/fetchers/properties.fetcher";
 
-export default function HomeProperties() {
+export default async function HomeProperties() {
+  const properties = await fetchProperties();
+
   const recentProperties = properties
     .sort(() => Math.random() - Math.random())
     .slice(0, 3);
@@ -19,7 +21,7 @@ export default function HomeProperties() {
               <p>No Properties Found</p>
             ) : (
               recentProperties.map((property) => (
-                <PropertyCard property={property} key={property._id} />
+                <PropertyCard property={property} key={property.id} />
               ))
             )}
           </div>{" "}

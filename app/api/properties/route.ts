@@ -2,9 +2,8 @@ import prisma from "@/config/prismadb.config";
 
 export async function GET() {
   try {
-    const properties = await prisma.property.findMany({
-      where: {},
-    });
+    const properties = await prisma.property.findMany({});
+
     return new Response(JSON.stringify(properties), { status: 200 });
   } catch (error) {
     console.log(error);
