@@ -30,7 +30,9 @@ export async function fetchPropertyById(id: string): Promise<Property | null> {
       return null;
     }
 
-    const res = await fetch(`${apiDomain}/properties/${id}`);
+    const res = await fetch(`${apiDomain}/properties/${id}`, {
+      next: { revalidate: 60 },
+    });
 
     if (!res.ok) {
       throw new Error("Error fetching property");
