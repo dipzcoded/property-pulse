@@ -9,7 +9,9 @@ export async function fetchProperties(): Promise<Property[]> {
       return [];
     }
 
-    const res = await fetch(`${apiDomain}/properties`);
+    const res = await fetch(`${apiDomain}/properties`, {
+      next: { tags: ["posts"] },
+    });
 
     if (!res.ok) {
       throw new Error("Failed to fetch data");

@@ -1,4 +1,5 @@
 import Goback from "@/components/Goback";
+import PropertyImages from "@/components/Property/PropertyImages";
 import PropertyInfo from "@/components/Property/PropertyInfo";
 import PropertyHeaderImage from "@/components/PropertyHeaderImage";
 import { fetchPropertyById } from "@/fetchers/properties.fetcher";
@@ -24,6 +25,7 @@ export default async function PropertyPage({ params }: Props) {
       <PropertyHeaderImage image={property.images[0]} />
       <Goback path="/properties" />
       <PropertyInfo property={property} />
+      <PropertyImages images={property.images} />
     </>
   );
 }
