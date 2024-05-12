@@ -10,7 +10,7 @@ export async function fetchProperties(): Promise<Property[]> {
     }
 
     const res = await fetch(`${apiDomain}/properties`, {
-      next: { tags: ["posts"] },
+      next: { tags: ["properties"] },
     });
 
     if (!res.ok) {
@@ -44,5 +44,26 @@ export async function fetchPropertyById(id: string): Promise<Property | null> {
     console.error(error);
     return null;
     // Re-throw the error to propagate it to the caller
+  }
+}
+
+export async function fetchUserListings(userId: string): Promise<Property[]> {
+  try {
+    // Handle a case where the domainis not avaliable yet.
+    if (!apiDomain) {
+      return [];
+    }
+
+    const res = await fetch(`${apiDomain}/properties/user/${userId}`, {
+      next: { tags: ["user-listings"] },
+    });
+
+    if (!res.ok) {
+      throw new Error("Error fetching property");
+    }
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 }

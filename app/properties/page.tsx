@@ -3,8 +3,6 @@ import { fetchProperties } from "@/fetchers/properties.fetcher";
 export default async function PropertiesPage() {
   const properties = await fetchProperties();
 
-  console.log(properties);
-
   return (
     <section className="px-4 py-6">
       <div className="container-xl lg:container m-auto px-4 py-6">

@@ -1,1 +1,1 @@
-export { createProperty } from "./property.action";
+export { createProperty, deleteUserListing } from "./property.action";

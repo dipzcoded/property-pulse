@@ -1,35 +1,38 @@
 "use client";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
+import { redirect } from "next/navigation";
 import { createProperty } from "@/actions";
 import { PropertyFormState } from "@/types";
+import AddPropertyButton from "./AddPropertyButton";
 
 export default function PropertyAddForm() {
   const [fields, setFields] = useState<PropertyFormState>({
-    type: "Apartment",
-    name: " Test Apartment",
-    amenities: ["Wifi"],
-    baths: 3,
-    beds: 2,
-    squareFeet: 1800,
-    description: "test description",
+    type: "",
+    name: " ",
+    amenities: [""],
+    baths: 0,
+    beds: 0,
+    squareFeet: 0,
+    description: "",
     images: [""],
     location: {
-      city: "Test city",
+      city: "",
       state: "",
       street: "",
       zipCode: "",
     },
     rate: {
-      monthly: 2000,
-      weekly: null,
-      nightly: null,
+      monthly: 0,
+      weekly: 0,
+      nightly: 0,
     },
     sellerInfo: {
-      email: "test@gmail.com",
+      email: "",
       name: "",
       phone: "",
     },
   });
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -81,7 +84,20 @@ export default function PropertyAddForm() {
   };
 
   return (
-    <form action={createProperty}>
+    <form
+      ref={formRef}
+      action={async (formData) => {
+        const response = await createProperty(formData);
+
+        if (response?.error) {
+          console.log(response.error);
+        } else {
+          console.log("created successfully!");
+          formRef.current?.reset();
+          redirect(`/properties/${response?.newProperty?.id}`);
+        }
+      }}
+    >
       <h2 className="text-3xl text-center font-semibold mb-6">Add Property</h2>
 
       <div className="mb-4">
@@ -430,7 +446,7 @@ export default function PropertyAddForm() {
             <input
               type="number"
               id="weekly_rate"
-              name="rates.weekly"
+              name="rate.weekly"
               className="border rounded w-full py-2 px-3"
               value={fields.rate.weekly as number}
               onChange={handleChange}
@@ -443,7 +459,7 @@ export default function PropertyAddForm() {
             <input
               type="number"
               id="monthly_rate"
-              name="rates.monthly"
+              name="rate.monthly"
               className="border rounded w-full py-2 px-3"
               value={fields.rate.monthly as number}
               onChange={handleChange}
@@ -456,7 +472,7 @@ export default function PropertyAddForm() {
             <input
               type="number"
               id="nightly_rate"
-              name="rates.nightly"
+              name="rate.nightly"
               className="border rounded w-full py-2 px-3"
               value={fields.rate.nightly as number}
               onChange={handleChange}
@@ -534,14 +550,7 @@ export default function PropertyAddForm() {
         />
       </div>
 
-      <div>
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
-          type="submit"
-        >
-          Add Property
-        </button>
-      </div>
+      <AddPropertyButton />
     </form>
   );
 }
