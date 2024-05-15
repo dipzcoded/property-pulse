@@ -1,11 +1,12 @@
 "use client";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { Property } from "@prisma/client";
 import Link from "next/link";
 import Image from "next/image";
 import { deleteUserListing } from "@/actions";
 
 import { PropertyOptimisticUpdate } from "./UserListing";
+import { toast } from "react-toastify";
 
 type Props = {
   listing: Property;
@@ -13,18 +14,24 @@ type Props = {
 };
 
 export default function UserListingItem({ listing, optimisticUpdate }: Props) {
-  const [isPending, startTransition] = useTransition();
-
-  console.log(isPending);
+  const [_, startTransition] = useTransition();
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   async function handleDeleteSubmit() {
+    const confirm = window.confirm(
+      "Are you sure you wanna delete this property"
+    );
+    if (!confirm) return;
+
+    setIsDeleting(true);
     optimisticUpdate({ action: "delete", property: listing });
     const response = await deleteUserListing(listing.id);
     if (response?.error) {
-      console.log(response.error);
+      toast.error(response.error);
     } else {
-      console.log("deleted successfully!");
+      toast.success("Property deleted successfully!");
     }
+    setIsDeleting(false);
   }
 
   return (
@@ -56,7 +63,7 @@ export default function UserListingItem({ listing, optimisticUpdate }: Props) {
         <button
           className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-80"
           type="submit"
-          disabled={isPending}
+          disabled={isDeleting}
           onClick={(e) => startTransition(() => handleDeleteSubmit())}
         >
           Delete

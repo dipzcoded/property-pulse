@@ -1,39 +1,44 @@
 "use client";
-import { ChangeEvent, useRef, useState } from "react";
-import { redirect } from "next/navigation";
-import { toast } from "react-toastify";
-import { createProperty } from "@/actions";
+import { useState, ChangeEvent, useRef } from "react";
 import { PropertyFormState } from "@/types";
+import { Property } from "@prisma/client";
 import AddPropertyButton from "./AddPropertyButton";
+import { updateListingById } from "@/actions";
+import { toast } from "react-toastify";
+import { redirect } from "next/navigation";
 
+type Props = {
+  property: Property;
+};
 
-export default function PropertyAddForm() {
+export default function PropertyEditForm({ property }: Props) {
   const [fields, setFields] = useState<PropertyFormState>({
-    type: "",
-    name: " ",
-    amenities: [""],
-    baths: 0,
-    beds: 0,
-    squareFeet: 0,
-    description: "",
-    images: [""],
+    type: property.type,
+    name: property.name,
+    amenities: property.amenities,
+    baths: property.baths,
+    beds: property.beds,
+    squareFeet: property.squareFeet,
+    description: property.description,
+    images: property.images,
     location: {
-      city: "",
-      state: "",
-      street: "",
-      zipCode: "",
+      city: property.location.city,
+      state: property.location.state,
+      street: property.location.street,
+      zipCode: property.location.zipCode,
     },
     rate: {
-      monthly: 0,
-      weekly: 0,
-      nightly: 0,
+      monthly: property.rate.monthly || 0,
+      weekly: property.rate.weekly || 0,
+      nightly: property.rate.nightly || 0,
     },
     sellerInfo: {
-      email: "",
-      name: "",
-      phone: "",
+      email: property.sellerInfo.email,
+      name: property.sellerInfo.name,
+      phone: property.sellerInfo.phone,
     },
   });
+
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleChange = (
@@ -89,18 +94,17 @@ export default function PropertyAddForm() {
     <form
       ref={formRef}
       action={async (formData) => {
-        const response = await createProperty(formData);
-
-        if (response?.error) {
+        const response = await updateListingById(property.id, formData);
+        if (response.error) {
           toast.error(response.error);
         } else {
-          toast.success("Property created successfully!");
+          toast.success("Property updated successfully!");
           formRef.current?.reset();
-          redirect(`/properties/${response?.newProperty?.id}`);
+          redirect(`/properties/${response.updatedProperty?.id}`);
         }
       }}
     >
-      <h2 className="text-3xl text-center font-semibold mb-6">Add Property</h2>
+      <h2 className="text-3xl text-center font-semibold mb-6">Edit Property</h2>
 
       <div className="mb-4">
         <label htmlFor="type" className="block text-gray-700 font-bold mb-2">
@@ -548,11 +552,10 @@ export default function PropertyAddForm() {
           accept="image/*"
           multiple
           onChange={handleImageChange}
-          required
         />
       </div>
 
-      <AddPropertyButton />
+      <AddPropertyButton isEdit={true} />
     </form>
   );
 }

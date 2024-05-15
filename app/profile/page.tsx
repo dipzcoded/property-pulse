@@ -1,15 +1,12 @@
+import { Suspense } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import getCurrentUser from "@/utils/getCurrentUser";
 import profileDefault from "@/asset/images/profile.png";
-import { fetchUserListings } from "@/fetchers/properties.fetcher";
-import prisma from "@/config/prismadb.config";
-import { revalidatePath, revalidateTag } from "next/cache";
-import UserListing from "@/components/Profile/UserListing";
+import UserListingServer from "@/components/Profile/UserListingServer";
+import LoadingPage from "../loading";
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
-  const userListings = await fetchUserListings(user?.id as string);
   const profileImage = user?.image;
   const profileName = user?.userName ? user.userName : "";
   const profileEmail = user?.email ? user.email : "";
@@ -38,8 +35,9 @@ export default async function ProfilePage() {
                 <span className="font-bold block">Email: </span> {profileEmail}
               </h2>
             </div>
-
-            <UserListing listings={userListings} />
+            <Suspense fallback={<LoadingPage loading />}>
+              <UserListingServer />
+            </Suspense>
           </div>
         </div>
       </div>
