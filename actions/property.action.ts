@@ -33,6 +33,10 @@ export async function createProperty(formData: FormData) {
   try {
     const user = await getCurrentUser();
 
+    if (!user) {
+      throw new Error("session not avaliable");
+    }
+
     // upload images to cloudinary
     const imageUploadPromises = [];
 
@@ -164,6 +168,12 @@ export async function updateListingById(id: string, formData: FormData) {
   };
 
   try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      throw new Error("session not avaliable");
+    }
+
     const images = formData.getAll("images") as File[];
     const isFileNotUploaded = Boolean(
       images.find((img) => img.name === "undefined")
@@ -181,6 +191,10 @@ export async function updateListingById(id: string, formData: FormData) {
 
     if (!propertyFound) {
       throw new Error("Listing not found");
+    }
+
+    if (propertyFound.userId !== user.id) {
+      throw new Error("Unauthorized");
     }
 
     let imagesUploaded: string[] = [];
