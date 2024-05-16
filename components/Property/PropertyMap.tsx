@@ -25,11 +25,17 @@ export default function PropertyMap({ property }: Props) {
 
   const { lat, lng, loading } = useGeoCode(propertyAddress);
   console.log(lat, lng, loading);
-
+  const isGeocodingError =
+    !loading &&
+    ((lat === undefined && lng === undefined) || (lat === 0 && lng === 0));
   if (loading) return <LoadingPage loading={loading} />;
 
+  if (isGeocodingError) {
+    return <div className="text-xl">No location data found</div>;
+  }
+
   return (
-    !loading && (
+    !isGeocodingError && (
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         mapLib={import("mapbox-gl")}

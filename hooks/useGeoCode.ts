@@ -17,6 +17,10 @@ export function useGeoCode(address: string) {
           `https://api.distancematrix.ai/maps/api/geocode/json?address=${address}&key=${apiKey}`
         );
         const data = await res.json();
+        console.log(data["result"]);
+        if (data["result"].length === 0) {
+          throw new Error("error geocoding");
+        }
         const location = data["result"][0]["geometry"]["location"];
         setLat(location["lat"]);
         setLng(location["lng"]);
