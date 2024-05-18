@@ -24,7 +24,6 @@ export default function PropertyMap({ property }: Props) {
   const propertyAddress = `${property.location.street} ${property.location.city} ${property.location.state} ${property.location.zipCode}`;
 
   const { lat, lng, loading } = useGeoCode(propertyAddress);
-  console.log(lat, lng, loading);
   const isGeocodingError =
     !loading &&
     ((lat === undefined && lng === undefined) || (lat === 0 && lng === 0));

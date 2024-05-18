@@ -1,4 +1,4 @@
-import { Property } from "@prisma/client";
+import { Property, UserPropertyBookmarks } from "@prisma/client";
 import {
   FaBed,
   FaBath,
@@ -7,14 +7,18 @@ import {
   FaCheck,
   FaMapMarker,
 } from "react-icons/fa";
-import ContactPorperty from "./ContactPorperty";
+import ContactProperty from "./ContactProperty";
 import PropertyMap from "./PropertyMap";
 
 type PropertyInfoProps = {
   property: Property;
+  userBookmarks: UserPropertyBookmarks[];
 };
 
-export default function PropertyInfo({ property }: PropertyInfoProps) {
+export default function PropertyInfo({
+  property,
+  userBookmarks,
+}: PropertyInfoProps) {
   return (
     <section className="bg-blue-50">
       <div className="container m-auto py-10 px-6">
@@ -96,7 +100,7 @@ export default function PropertyInfo({ property }: PropertyInfoProps) {
             </div>
           </main>
 
-          <ContactPorperty />
+          <ContactProperty property={property} userBookmarks={userBookmarks} />
         </div>
       </div>
     </section>

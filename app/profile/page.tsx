@@ -36,7 +36,7 @@ export default async function ProfilePage() {
               </h2>
             </div>
             <Suspense fallback={<LoadingPage loading />}>
-              <UserListingServer />
+              <UserListingServer userId={user?.id as string} />
             </Suspense>
           </div>
         </div>

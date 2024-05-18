@@ -2,7 +2,7 @@
 import { Rate } from "@prisma/client";
 import prisma from "@/config/prismadb.config";
 import { PropertyFormState } from "@/types";
-import getCurrentUser from "@/utils/getCurrentUser";
+import { getSession } from "@/utils/getCurrentUser";
 import { revalidatePath, revalidateTag } from "next/cache";
 import cloudinary from "@/config/cloudinary.config";
 
@@ -31,11 +31,14 @@ export async function createProperty(formData: FormData) {
   };
 
   try {
-    const user = await getCurrentUser();
+    const session = await getSession();
 
-    if (!user) {
+    if (!session) {
       throw new Error("session not avaliable");
     }
+
+    // @ts-ignore
+    const userId = session.user.id;
 
     // upload images to cloudinary
     const imageUploadPromises = [];
@@ -89,7 +92,7 @@ export async function createProperty(formData: FormData) {
       data: {
         ...propertyData,
         // @ts-ignore
-        userId: user!.id,
+        userId,
       },
     });
 
@@ -107,11 +110,14 @@ export async function createProperty(formData: FormData) {
 
 export async function deleteUserListing(listingId: string) {
   try {
-    const user = await getCurrentUser();
+    const session = await getSession();
 
-    if (!user) {
+    if (!session) {
       throw new Error("session not avaliable");
     }
+
+    // @ts-ignore
+    const userId = session.user.id;
 
     const property = await prisma.property.findUnique({
       where: {
@@ -124,7 +130,7 @@ export async function deleteUserListing(listingId: string) {
       throw new Error("Properties not found");
     }
 
-    if (property.userId !== user.id) {
+    if (property.userId !== userId) {
       // return { message: "Unauthorized" };
       throw new Error("Unauthorized");
     }
@@ -168,11 +174,14 @@ export async function updateListingById(id: string, formData: FormData) {
   };
 
   try {
-    const user = await getCurrentUser();
+    const session = await getSession();
 
-    if (!user) {
+    if (!session) {
       throw new Error("session not avaliable");
     }
+
+    // @ts-ignore
+    const userId = session.user.id;
 
     const images = formData.getAll("images") as File[];
     const isFileNotUploaded = Boolean(
@@ -193,7 +202,7 @@ export async function updateListingById(id: string, formData: FormData) {
       throw new Error("Listing not found");
     }
 
-    if (propertyFound.userId !== user.id) {
+    if (propertyFound.userId !== userId) {
       throw new Error("Unauthorized");
     }
 
