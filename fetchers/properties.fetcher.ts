@@ -25,6 +25,29 @@ export async function fetchProperties(): Promise<Property[]> {
   }
 }
 
+export async function fetchSearchProperties(
+  searchQuery: string
+): Promise<Property[]> {
+  try {
+    // Handle a case where the domainis not avaliable yet.
+    if (!apiDomain) {
+      return [];
+    }
+
+    const res = await fetch(`${apiDomain}/properties/search?${searchQuery}`);
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+    // Re-throw the error to propagate it to the caller
+  }
+}
+
 export async function fetchPropertyById(id: string): Promise<Property | null> {
   try {
     // Handle a case where the domainis not avaliable yet.

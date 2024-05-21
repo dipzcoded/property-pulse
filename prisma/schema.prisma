@@ -14,17 +14,19 @@ datasource db {
 }
 
 model User {
-  id         String                  @id @default(auto()) @map("_id") @db.ObjectId
-  email      String                  @unique
-  userName   String
-  image      String
-  emailVerified  DateTime?
-  bookmarks  UserPropertyBookmarks[]
-  properties Property[]
-  accounts   Account[]
-    sessions      Session[]
-  createdAt  DateTime                @default(now())
-  updatedAt  DateTime                @updatedAt
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  email             String    @unique
+  userName          String
+  image             String
+  emailVerified     DateTime?
+  bookmarks         UserPropertyBookmarks[]
+  properties        Property[]
+  accounts          Account[]
+  sessions          Session[]
+  recipientMessages Message[] @relation(name: "UserReceivedMessages")
+  senderMessages    Message[] @relation(name: "UserSentMessages")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 model Account {
@@ -93,11 +95,30 @@ model Property {
   rate        Rate
   sellerInfo  SellerInfo
   images      String[]
+  propertyMessages Message[]
 
   isFeatured    Boolean                 @default(false)
   userBookmarks UserPropertyBookmarks[]
   createdAt     DateTime                @default(now())
   updatedAt     DateTime                @updatedAt
+}
+
+model Message {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  senderUserId    String   @db.ObjectId
+  recipientUserId String   @db.ObjectId
+  propertyId String @db.ObjectId
+  property Property @relation(fields: [propertyId],references: [id])
+  name String
+  email String
+  phone String
+  body String
+  read Boolean @default(false)
+  
+  senderUser      User     @relation(name: "UserSentMessages", fields: [senderUserId], references: [id])
+  recipientUser   User     @relation(name: "UserReceivedMessages", fields: [recipientUserId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 type SellerInfo {
