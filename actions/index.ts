@@ -7,3 +7,4 @@ export {
   userBookmarkProperty,
   userUnBookmarkProperty,
 } from "./property-bookmark.action";
+export { sendMesssage } from "./message.action";

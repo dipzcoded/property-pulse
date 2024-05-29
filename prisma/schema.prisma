@@ -111,10 +111,10 @@ model Message {
   property Property @relation(fields: [propertyId],references: [id])
   name String
   email String
-  phone String
+  phone String?
   body String
   read Boolean @default(false)
-  
+
   senderUser      User     @relation(name: "UserSentMessages", fields: [senderUserId], references: [id])
   recipientUser   User     @relation(name: "UserReceivedMessages", fields: [recipientUserId], references: [id])
   createdAt       DateTime @default(now())

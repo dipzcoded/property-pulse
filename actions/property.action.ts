@@ -33,7 +33,7 @@ export async function createProperty(formData: FormData) {
   try {
     const session = await getSession();
 
-    if (!session) {
+    if (!session || !session.user) {
       throw new Error("session not avaliable");
     }
 
@@ -112,7 +112,7 @@ export async function deleteUserListing(listingId: string) {
   try {
     const session = await getSession();
 
-    if (!session) {
+    if (!session || !session.user) {
       throw new Error("session not avaliable");
     }
 
@@ -176,7 +176,7 @@ export async function updateListingById(id: string, formData: FormData) {
   try {
     const session = await getSession();
 
-    if (!session) {
+    if (!session || !session.user) {
       throw new Error("session not avaliable");
     }
 

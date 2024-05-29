@@ -22,8 +22,6 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async signIn({ profile }) {
-      // @ts-ignore
-      console.log(profile.picture);
       const userExist = await prisma.user.findUnique({
         where: { email: profile?.email },
       });

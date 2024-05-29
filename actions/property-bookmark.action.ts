@@ -8,7 +8,7 @@ export async function userBookmarkProperty(propertyId: string) {
   try {
     const session = await getSession();
 
-    if (!session) {
+    if (!session || !session.user) {
       throw new Error("session not avaliable");
     }
 
@@ -47,7 +47,7 @@ export async function userUnBookmarkProperty(propertyId: string) {
   try {
     const session = await getSession();
 
-    if (!session) {
+    if (!session || !session.user) {
       throw new Error("session not avaliable");
     }
 
